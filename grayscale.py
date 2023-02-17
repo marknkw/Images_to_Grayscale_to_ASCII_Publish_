@@ -114,7 +114,7 @@ def canaistamanho_imagem():
 
 
 def imagem_cinza_para_ascii(imagem, coordenadas):
-    imagem_ascii= []
+    imagem_ascii = []
     """imagem_index = int(coordenadas[0]/12)*int(coordenadas[1]/12)
     print(int(imagem_index))
     exit()"""
