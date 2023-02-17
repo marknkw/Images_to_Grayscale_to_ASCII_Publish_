@@ -121,7 +121,7 @@ def imagem_cinza_para_ascii(imagem, coordenadas):
     valor_index = 0
     for i in range(coordenadas[0]):
         for j in range(coordenadas[1]):
-            valor_luminancia = int((math.floor(imagem[valor_index]*69-1)/255))
+            valor_luminancia = int((math.floor(imagem[valor_index]*69)/255))
             imagem_ascii.append(escala_cinza_um[valor_luminancia])
             valor_index = valor_index+1
     print(imagem_ascii)
