@@ -112,9 +112,21 @@ def canaistamanho_imagem():
         print("Pasta não existe...")
         exit()
 
-"""def imagem_cinza_para_ascii(imagem):
-    
-    """
+
+def imagem_cinza_para_ascii(imagem, coordenadas):
+    imagem_ascii= []
+    """imagem_index = int(coordenadas[0]/12)*int(coordenadas[1]/12)
+    print(int(imagem_index))
+    exit()"""
+    valor_index = 0
+    for i in range(coordenadas[0]):
+        for j in range(coordenadas[1]):
+            valor_luminancia = int((math.floor(imagem[valor_index]*69-1)/255))
+            imagem_ascii.append(escala_cinza_um[valor_luminancia])
+            valor_index = valor_index+1
+    print(imagem_ascii)
+
+
 escala_cinza_dois = "@%#*+=-:. "
 escala_cinza_um = r"$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,^`'. "
 
@@ -145,3 +157,4 @@ while True:
                        "Por favor, use somente letras de A até Z...\n" +
                        "Caso queira sair, digite 'sair'...\n")
 
+imagem_cinza_para_ascii(imagem_cinza_out, coordenadas_globais)
