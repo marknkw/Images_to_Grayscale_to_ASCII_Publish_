@@ -91,6 +91,22 @@ def media_dos_pixels(r, g, b, l_im, a_im):
     return imagem_cinza, coordenadas_cinza
 
 
+def pixel_para_lista_resize(l_imagem, l_im, a_im):
+    imagem_cinza = []
+    coordenadas_cinza = []
+    for i in range(0, l_im):
+        for j in range(0, a_im):
+            coordenadas = i, j
+            luminancia = float(l_imagem.getpixel(coordenadas))
+            imagem_cinza.append(int(luminancia))
+            coordenadas_cinza.append(coordenadas)
+
+    """print(len(imagem_cinza))
+    print(len(coordenadas_cinza))"""
+
+    return imagem_cinza, coordenadas_cinza
+
+
 def importar_imagem(imagem):
     imagem_inicial = "Resources/" + imagem
     """print(imagem_inicial)"""
@@ -104,7 +120,7 @@ def importar_imagem(imagem):
 def canaistamanho_imagem():
 
     if verificar_diretorio("Resources"):
-        r, g, b, = importar_imagem("morango.png")
+        r, g, b = importar_imagem("morango.png")
         l_im, a_im = verificar_tamanho_imagem("Resources/morango.png")
         return r, g, b, l_im, a_im
 
@@ -137,11 +153,11 @@ def definir_tamanho_divisivel(largura, altura):
     return largura_divisivel, altura_divisivel
 
 
-def imagem_cinza_para_ascii(imagem, coordenadas):
+def imagem_cinza_para_ascii(imagem, coordenadas, coordenadas_cinza):
     imagem_ascii = []
     imagem_ascii_redimensionada = []
-    imagem_l_r, imagem_a_r = int(coordenadas[0]/12), int(coordenadas[1]/12)
-    imagem_l_r, imagem_a_r = definir_tamanho_divisivel(imagem_l_r, imagem_a_r)
+    imagem_l, imagem_a = int(coordenadas[0]/12), int(coordenadas[1]/12)
+    imagem_l_r, imagem_a_r = definir_tamanho_divisivel(imagem_l, imagem_a)
 
     valor_index = 0
     for i in range(coordenadas[0]):
@@ -149,6 +165,26 @@ def imagem_cinza_para_ascii(imagem, coordenadas):
             valor_luminancia = int((math.floor(imagem[valor_index]*69)/255))
             imagem_ascii.append(escala_cinza_um[valor_luminancia])
             valor_index = valor_index+1
+
+
+def imagem_cinza_para_ascii_com_resize(coordenadas):
+    imagem_redimensionada_luminancia = []
+    imagem_ascii_redimensionada = []
+    imagem_cinza_local = Image.open("Resources/grayscale.png")
+    imagem_l, imagem_a = int(coordenadas[0] / 12), int(coordenadas[1] / 12)
+    imagem_l_r, imagem_a_r = definir_tamanho_divisivel(imagem_l, imagem_a)
+    imagem_cinza_redimensionada = imagem_cinza_local.resize((int(imagem_l_r), int(imagem_a_r)))
+    imagem_cinza_redimensionada.show()
+    imagem_cinza_redimensionada.save("Resources/grayscale_redimensionada.png")
+    imagem_redimensionada_luminancia, coordenadas_luminancia = pixel_para_lista_resize(imagem_cinza_redimensionada, imagem_l_r, imagem_a_r)
+    valor_index = 0
+    for i in range(imagem_l_r):
+        for j in range(imagem_a_r):
+            valor_luminancia = int((math.floor(imagem_redimensionada_luminancia[valor_index]*69)/255)-1)
+            imagem_ascii_redimensionada.append(escala_cinza_um[valor_luminancia])
+            valor_index = valor_index+1
+    print(imagem_ascii_redimensionada)
+    exit()
 
 
 escala_cinza_dois = "@%#*+=-:. "
@@ -181,4 +217,5 @@ while True:
                        "Por favor, use somente letras de A até Z...\n" +
                        "Caso queira sair, digite 'sair'...\n")
 
-imagem_cinza_para_ascii(imagem_cinza_out, coordenadas_globais)
+"""imagem_cinza_para_ascii(imagem_cinza_out, coordenadas_globais, coordenadas_cinza_globais)"""
+imagem_cinza_para_ascii_com_resize(coordenadas_globais)
