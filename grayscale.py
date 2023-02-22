@@ -113,18 +113,42 @@ def canaistamanho_imagem():
         exit()
 
 
+def definir_tamanho_divisivel(largura, altura):
+    mod_l, mod_a = (largura % 12), (altura % 12)
+    largura_divisivel = largura
+    altura_divisivel = altura
+
+    if mod_l != 0:
+        if mod_l <= 5:
+            largura_divisivel = largura - mod_l
+        elif mod_l > 5:
+            largura_divisivel = (12-mod_l)+largura
+    else:
+        largura_divisivel = mod_l
+
+    if mod_a != 0:
+        if mod_a <= 5:
+            altura_divisivel = altura - mod_a
+        elif mod_a > 5:
+            altura_divisivel = (12-mod_a)+altura
+    else:
+        altura_divisivel = mod_a
+
+    return largura_divisivel, altura_divisivel
+
+
 def imagem_cinza_para_ascii(imagem, coordenadas):
     imagem_ascii = []
-    """imagem_index = int(coordenadas[0]/12)*int(coordenadas[1]/12)
-    print(int(imagem_index))
-    exit()"""
+    imagem_ascii_redimensionada = []
+    imagem_l_r, imagem_a_r = int(coordenadas[0]/12), int(coordenadas[1]/12)
+    imagem_l_r, imagem_a_r = definir_tamanho_divisivel(imagem_l_r, imagem_a_r)
+
     valor_index = 0
     for i in range(coordenadas[0]):
         for j in range(coordenadas[1]):
             valor_luminancia = int((math.floor(imagem[valor_index]*69)/255))
             imagem_ascii.append(escala_cinza_um[valor_luminancia])
             valor_index = valor_index+1
-    print(imagem_ascii)
 
 
 escala_cinza_dois = "@%#*+=-:. "
