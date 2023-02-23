@@ -43,7 +43,7 @@ def print_digitado(frase):
         sys.stdout.write(i)
         sys.stdout.flush()
         time.sleep(0.1)
-
+        sys.stdout.flush()
 
 
 def verificar_tamanho_imagem(imagem):
@@ -167,24 +167,46 @@ def imagem_cinza_para_ascii(imagem, coordenadas, coordenadas_cinza):
             valor_index = valor_index+1
 
 
-def imagem_cinza_para_ascii_com_resize(coordenadas):
-    imagem_redimensionada_luminancia = []
-    imagem_ascii_redimensionada = []
+def salvar_imagem_ascii(diretorio, imagem, coordenadas):
+    with open(diretorio + "/" + "imagem_ascii.txt", 'w+') as txt:
+        coordenadas_tamanho = coordenadas[0] * coordenadas[1]
+        index = 0
+        for i in range(0, len(coordenadas[1])):
+            imagem_list = []
+            for j in range(0, len(coordenadas[0])):
+                imagem_list.append(imagem[index].split('\n'))
+                index = index + 1
+            print(imagem_list)
+            exit()
+            txt.write(str(imagem_list) + "\n")
+            imagem_list.clear()
+
+
+
+def imagem_redimensionada(coordenadas):
     imagem_cinza_local = Image.open("Resources/grayscale.png")
     imagem_l, imagem_a = int(coordenadas[0] / 12), int(coordenadas[1] / 12)
     imagem_l_r, imagem_a_r = definir_tamanho_divisivel(imagem_l, imagem_a)
     imagem_cinza_redimensionada = imagem_cinza_local.resize((int(imagem_l_r), int(imagem_a_r)))
     imagem_cinza_redimensionada.show()
     imagem_cinza_redimensionada.save("Resources/grayscale_redimensionada.png")
-    imagem_redimensionada_luminancia, coordenadas_luminancia = pixel_para_lista_resize(imagem_cinza_redimensionada, imagem_l_r, imagem_a_r)
+    imagem_redimensionada_luminancia, coordenadas_luminancia = pixel_para_lista_resize(imagem_cinza_redimensionada,
+                                                                                           imagem_l_r, imagem_a_r)
+    return imagem_a_r, imagem_l_r, imagem_redimensionada_luminancia
+
+
+def imagem_cinza_para_ascii_com_resize(coordenadas):
+    imagem_redimensionada_luminancia = []
+    imagem_ascii_redimensionada = []
+    imagem_a_r, imagem_l_r, imagem_redimensionada_luminancia = imagem_redimensionada(coordenadas)
     valor_index = 0
     for i in range(imagem_l_r):
         for j in range(imagem_a_r):
             valor_luminancia = int((math.floor(imagem_redimensionada_luminancia[valor_index]*69)/255)-1)
             imagem_ascii_redimensionada.append(escala_cinza_um[valor_luminancia])
             valor_index = valor_index+1
-    print(imagem_ascii_redimensionada)
-    exit()
+    coordenadas_r = imagem_l_r, imagem_a_r
+    return imagem_ascii_redimensionada, coordenadas_r
 
 
 escala_cinza_dois = "@%#*+=-:. "
@@ -196,6 +218,7 @@ r_out, g_out, b_out, l_im_out, a_im_out = canaistamanho_imagem()
 coordenadas_globais = [int(l_im_out), int(a_im_out)]
 imagem_cinza_out, coordenadas_cinza_globais = media_dos_pixels(r_out, b_out, g_out, l_im_out, a_im_out)
 imagem_cinza_final = salvar_imagem(imagem_cinza_out, coordenadas_globais, coordenadas_cinza_globais)
+nome_diretorio_ascii = []
 
 while True:
     print_digitado("Digite o nome do diretório ASCII que deseja criar: ")
@@ -218,4 +241,11 @@ while True:
                        "Caso queira sair, digite 'sair'...\n")
 
 """imagem_cinza_para_ascii(imagem_cinza_out, coordenadas_globais, coordenadas_cinza_globais)"""
-imagem_cinza_para_ascii_com_resize(coordenadas_globais)
+imagem_ascii_redimensionada_global, coordenadas_redimensionadas = imagem_cinza_para_ascii_com_resize(coordenadas_globais)
+salvar_imagem_ascii(nome_diretorio_ascii, imagem_ascii_redimensionada_global, coordenadas_redimensionadas)
+
+"""if salvar_bool:
+    print_digitado("Imagem salva em " + nome_diretorio_ascii + "...\n")
+    exit()
+else:
+    print_digitado("Não foi possível salvar a imagem...")"""
