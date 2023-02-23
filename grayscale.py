@@ -171,16 +171,15 @@ def salvar_imagem_ascii(diretorio, imagem, coordenadas):
     with open(diretorio + "/" + "imagem_ascii.txt", 'w+') as txt:
         coordenadas_tamanho = coordenadas[0] * coordenadas[1]
         index = 0
-        for i in range(0, len(coordenadas[1])):
+        for i in range(0, coordenadas[0]):
             imagem_list = []
-            for j in range(0, len(coordenadas[0])):
-                imagem_list.append(imagem[index].split('\n'))
+            for j in range(0, coordenadas[1]):
+                clean_ascii = str(imagem[index]).strip("[],").split('\n')
+                imagem_list.append(clean_ascii)
                 index = index + 1
-            print(imagem_list)
-            exit()
-            txt.write(str(imagem_list) + "\n")
+            txt.write(str(imagem_list).strip("[],") + "\n")
             imagem_list.clear()
-
+        exit()
 
 
 def imagem_redimensionada(coordenadas):
