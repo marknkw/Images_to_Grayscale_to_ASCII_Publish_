@@ -60,7 +60,7 @@ def salvar_imagem(imagem, tamanho, coordenadas_cinza):
         imagem_cinza_nova.putpixel((coordenadas_cinza[i]), imagem[i])
 
     print(imagem_cinza_nova.size)
-    imagem_cinza_nova.show()
+    """imagem_cinza_nova.show()"""
     imagem_cinza_nova.save("Resources/grayscale.png")
     return imagem_cinza_nova
 
@@ -91,20 +91,25 @@ def media_dos_pixels(r, g, b, l_im, a_im):
     return imagem_cinza, coordenadas_cinza
 
 
-def pixel_para_lista_resize(l_imagem, l_im, a_im):
-    imagem_cinza = []
+def pixel_para_lista_resize(l_imagem):
+    imagem_cinza_ascii = []
     coordenadas_cinza = []
-    for i in range(0, l_im):
-        for j in range(0, a_im):
-            coordenadas = i, j
-            luminancia = float(l_imagem.getpixel(coordenadas))
-            imagem_cinza.append(int(luminancia))
-            coordenadas_cinza.append(coordenadas)
+    tamanho = (x, y) = l_imagem.size
+    print(tamanho)
 
-    """print(len(imagem_cinza))
+    for j in range(0, y - 1):
+        linha = ""
+        for i in range(0, x - 1):
+            coordenadas = i, j
+            luminancia = l_imagem.getpixel(coordenadas)
+            valor_luminancia = int((luminancia * 69 / 255)) - 1
+            linha += escala_cinza_um[valor_luminancia] + " "
+            coordenadas_cinza.append(coordenadas)
+        imagem_cinza_ascii.append(linha)
+    """print(len(imagem_cinza_ascii))
     print(len(coordenadas_cinza))"""
 
-    return imagem_cinza, coordenadas_cinza
+    return imagem_cinza_ascii, coordenadas_cinza
 
 
 def importar_imagem(imagem):
@@ -167,18 +172,11 @@ def imagem_cinza_para_ascii(imagem, coordenadas, coordenadas_cinza):
             valor_index = valor_index+1
 
 
-def salvar_imagem_ascii(diretorio, imagem, coordenadas):
+def salvar_imagem_ascii(diretorio, imagem):
     with open(diretorio + "/" + "imagem_ascii.txt", 'w+') as txt:
-        coordenadas_tamanho = coordenadas[0] * coordenadas[1]
-        index = 0
-        for i in range(0, coordenadas[0]):
-            imagem_list = []
-            for j in range(0, coordenadas[1]):
-                clean_ascii = str(imagem[index]).strip("[],").split('\n')
-                imagem_list.append(clean_ascii)
-                index = index + 1
-            txt.write(str(imagem_list).strip("[],") + "\n")
-            imagem_list.clear()
+        for i in imagem:
+            txt.write(i + "\n")
+        txt.close()
         exit()
 
 
@@ -187,30 +185,25 @@ def imagem_redimensionada(coordenadas):
     imagem_l, imagem_a = int(coordenadas[0] / 12), int(coordenadas[1] / 12)
     imagem_l_r, imagem_a_r = definir_tamanho_divisivel(imagem_l, imagem_a)
     imagem_cinza_redimensionada = imagem_cinza_local.resize((int(imagem_l_r), int(imagem_a_r)))
-    imagem_cinza_redimensionada.show()
     imagem_cinza_redimensionada.save("Resources/grayscale_redimensionada.png")
-    imagem_redimensionada_luminancia, coordenadas_luminancia = pixel_para_lista_resize(imagem_cinza_redimensionada,
-                                                                                           imagem_l_r, imagem_a_r)
-    return imagem_a_r, imagem_l_r, imagem_redimensionada_luminancia
+    imagem_redimensionada_luminancia, coordenadas_luminancia = pixel_para_lista_resize(imagem_cinza_redimensionada)
+    return imagem_l_r, imagem_a_r, imagem_redimensionada_luminancia
 
 
 def imagem_cinza_para_ascii_com_resize(coordenadas):
     imagem_redimensionada_luminancia = []
     imagem_ascii_redimensionada = []
-    imagem_a_r, imagem_l_r, imagem_redimensionada_luminancia = imagem_redimensionada(coordenadas)
-    valor_index = 0
-    for i in range(imagem_l_r):
-        for j in range(imagem_a_r):
-            valor_luminancia = int((math.floor(imagem_redimensionada_luminancia[valor_index]*69)/255)-1)
-            imagem_ascii_redimensionada.append(escala_cinza_um[valor_luminancia])
-            valor_index = valor_index+1
+    imagem_l_r, imagem_a_r, imagem_redimensionada_luminancia_ascii = imagem_redimensionada(coordenadas)
     coordenadas_r = imagem_l_r, imagem_a_r
-    return imagem_ascii_redimensionada, coordenadas_r
+    return imagem_redimensionada_luminancia_ascii, coordenadas_r
 
 
-escala_cinza_dois = "@%#*+=-:. "
+def reverter_ramps(string):
+    return string[::-1]
+
+
+escala_cinza_dois = r"@%#*+=-:. "
 escala_cinza_um = r"$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,^`'. "
-
 r_out, g_out, b_out, l_im_out, a_im_out = canaistamanho_imagem()
 """r_out.show(), g_out.show(), b_out.show()"""
 """print(l_im_out, a_im_out)"""
@@ -241,7 +234,7 @@ while True:
 
 """imagem_cinza_para_ascii(imagem_cinza_out, coordenadas_globais, coordenadas_cinza_globais)"""
 imagem_ascii_redimensionada_global, coordenadas_redimensionadas = imagem_cinza_para_ascii_com_resize(coordenadas_globais)
-salvar_imagem_ascii(nome_diretorio_ascii, imagem_ascii_redimensionada_global, coordenadas_redimensionadas)
+salvar_imagem_ascii(nome_diretorio_ascii, imagem_ascii_redimensionada_global)
 
 """if salvar_bool:
     print_digitado("Imagem salva em " + nome_diretorio_ascii + "...\n")
