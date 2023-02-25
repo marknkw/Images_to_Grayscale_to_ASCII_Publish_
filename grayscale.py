@@ -15,7 +15,7 @@ def verificar_imagem(nome):
 def verificar_diretorio(nome):
     caminho = os.path.exists(nome)
     if caminho:
-        if verificar_imagem("Resources/morango.png"):
+        if verificar_imagem("Resources/quadra.jpg"):
             return True
         else:
             return False
@@ -42,8 +42,7 @@ def print_digitado(frase):
     for i in frase:
         sys.stdout.write(i)
         sys.stdout.flush()
-        time.sleep(0.1)
-        sys.stdout.flush()
+        time.sleep(0.01)
 
 
 def verificar_tamanho_imagem(imagem):
@@ -55,11 +54,11 @@ def salvar_imagem(imagem, tamanho, coordenadas_cinza):
     print(imagem_bytes)
     imagem_cinza_nova = Image.frombytes("L", tamanho, imagem_bytes)"""
     imagem_cinza_nova = Image.new("L", tamanho)
-    print(imagem)
+    """print(imagem)"""
     for i in range(0, tamanho[0]*tamanho[1]):
         imagem_cinza_nova.putpixel((coordenadas_cinza[i]), imagem[i])
 
-    print(imagem_cinza_nova.size)
+    """print(imagem_cinza_nova.size)"""
     """imagem_cinza_nova.show()"""
     imagem_cinza_nova.save("Resources/grayscale.png")
     return imagem_cinza_nova
@@ -95,7 +94,7 @@ def pixel_para_lista_resize(l_imagem):
     imagem_cinza_ascii = []
     coordenadas_cinza = []
     tamanho = (x, y) = l_imagem.size
-    print(tamanho)
+    """print(tamanho)"""
 
     for j in range(0, y - 1):
         linha = ""
@@ -125,8 +124,8 @@ def importar_imagem(imagem):
 def canaistamanho_imagem():
 
     if verificar_diretorio("Resources"):
-        r, g, b = importar_imagem("morango.png")
-        l_im, a_im = verificar_tamanho_imagem("Resources/morango.png")
+        r, g, b = importar_imagem("quadra.jpg")
+        l_im, a_im = verificar_tamanho_imagem("Resources/quadra.jpg")
         return r, g, b, l_im, a_im
 
     else:
@@ -144,17 +143,16 @@ def definir_tamanho_divisivel(largura, altura):
             largura_divisivel = largura - mod_l
         elif mod_l > 5:
             largura_divisivel = (12-mod_l)+largura
-    else:
-        largura_divisivel = mod_l
+    elif mod_l == 0:
+        largura_divisivel = largura/12
 
     if mod_a != 0:
         if mod_a <= 5:
             altura_divisivel = altura - mod_a
         elif mod_a > 5:
             altura_divisivel = (12-mod_a)+altura
-    else:
-        altura_divisivel = mod_a
-
+    elif mod_a == 0:
+        altura_divisivel = altura/12
     return largura_divisivel, altura_divisivel
 
 
@@ -182,7 +180,7 @@ def salvar_imagem_ascii(diretorio, imagem):
 
 def imagem_redimensionada(coordenadas):
     imagem_cinza_local = Image.open("Resources/grayscale.png")
-    imagem_l, imagem_a = int(coordenadas[0] / 12), int(coordenadas[1] / 12)
+    imagem_l, imagem_a = coordenadas[0] / 12, coordenadas[1] / 12
     imagem_l_r, imagem_a_r = definir_tamanho_divisivel(imagem_l, imagem_a)
     imagem_cinza_redimensionada = imagem_cinza_local.resize((int(imagem_l_r), int(imagem_a_r)))
     imagem_cinza_redimensionada.save("Resources/grayscale_redimensionada.png")
